@@ -1,0 +1,3 @@
+[console_scripts]
+lassh = lassh.__main__:main
+
