@@ -20,5 +20,10 @@ A CLI to manage your global config for you and to make using multiple ssh config
 
 5. `lassh teardown` unlinks the lassh.config in the current directory from the global config. If you wish, simply `rm lassh.config` to delete the file.
 
+# CS98 Stuff
+This was an excellent opportunity to try out building command line tools / development tools and also work with python packaging and distribution.
 
+I definitely enjoyed working on this project and the output actually feels quite usable with some extra work. It also supported the idea that I want to build a tool for someone for CS98 rather than some consumer facing product.
+
+Honestly, the whole process ran like a beaut. There were a few bumps getting set up on a new python package.
 
