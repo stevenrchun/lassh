@@ -1,7 +1,7 @@
-from .lassh import cli
+from .lassh import lassh
 
 def main(args=None):
-    cli() 
+    lassh() 
 
 if __name__ == '__main__':
     main()

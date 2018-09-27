@@ -7,7 +7,9 @@ setup(
     install_requires=[
         'Click',
         'sshconf',
-        'setuptools'
+        'setuptools',
+        'clint',
+        'pathlib'
     ],
     entry_points={
         'console_scripts': [

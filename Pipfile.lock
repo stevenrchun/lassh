@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e616e3b5486fe5ca3881026d57f20fdb533629936287098e984859c031f52b3a"
+            "sha256": "8eb0a712e6b9936431de297baaa3487ffa4f8f44983cd523c1f560dc97b5d82e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,12 @@
         ]
     },
     "default": {
+        "args": {
+            "hashes": [
+                "sha256:a785b8d837625e9b61c39108532d95b85274acd679693b71ebb5156848fcf814"
+            ],
+            "version": "==0.1.0"
+        },
         "click": {
             "hashes": [
                 "sha256:2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13",
@@ -23,6 +29,13 @@
             ],
             "index": "pypi",
             "version": "==7.0"
+        },
+        "clint": {
+            "hashes": [
+                "sha256:05224c32b1075563d0b16d0015faaf9da43aa214e4a2140e51f08789e7a4c5aa"
+            ],
+            "index": "pypi",
+            "version": "==0.5.1"
         },
         "sshconf": {
             "hashes": [
