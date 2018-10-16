@@ -4,7 +4,7 @@ setup(
     name='lassh',
     author='Steven Chun',
     author_email='schunchicago@gmail.com',
-    url='https://github.com/dartmouth-cs98/hack-a-thing-2-prebake',
+    url='https://github.com/stevenrchun/lassh',
     version='0.1.0',
     packages=['lassh'],
     install_requires=[
