@@ -8,6 +8,7 @@ setuptools = "*"
 click = "*"
 sshconf = "*"
 clint = "*"
+"flake8" = "*"
 
 [dev-packages]
 lassh = {editable = true, path = "."}
