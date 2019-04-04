@@ -1,4 +1,4 @@
-from .lassh import lassh
+from lassh import lassh
 
 def main(args=None):
     lassh() 
