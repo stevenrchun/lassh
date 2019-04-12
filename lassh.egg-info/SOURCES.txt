@@ -1,4 +1,5 @@
 README.md
+setup.py
 lassh/__init__.py
 lassh/__main__.py
 lassh/lassh.py

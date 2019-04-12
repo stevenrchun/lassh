@@ -34,6 +34,7 @@ def deleteInclude():
     # https://stackoverflow.com/questions/4710067/deleting-a-specific-line-in-a-file-python
     # Check if the Include statement already exists
     includeFound = False
+    corrupted_configs = set()
     with open(HOME_SSH_CONFIG_PATH, 'r+') as f:
         lines = f.readlines()
         f.seek(0)
@@ -41,12 +42,21 @@ def deleteInclude():
             lineComponents = str.split(line)
             # Check for Include statments
             if lineComponents and lineComponents[0] == 'Include':
-                includePath = lineComponents[1]
-                # Check if path indicated by
-                # Include and current lassh.config are the same file
-                if os.path.samefile(LASSH_CONFIG_PATH.resolve(), includePath):
+                includePathString = lineComponents[1]
+                includePath = Path(includePathString)
+                # Check if path indicated by pathstring is a file
+                if (not includePath.exists()):
+                    corrupted_configs.add(includePathString)
+                    puts(colored.yellow(
+                        'Found corrupted config {0}, removing'
+                        .format(includePathString)))
+                    # if it's not then we add it to corrupted_configs and skip
+                    continue
+
+                if (os.path.samefile(LASSH_CONFIG_PATH.resolve(),
+                                     includePathString)):
                     puts(colored.red(
-                        'Deleting include for {0}'.format(includePath)))
+                        'Deleting include for {0}'.format(includePathString)))
                     includeFound = True
                 # If not, preserve the line
                 else:
@@ -56,7 +66,39 @@ def deleteInclude():
             else:
                 f.write(line)
         f.truncate()
+    # now delete any corrupted configs
+    deleteCorruptedConfig(corrupted_configs)
+
     return includeFound
+
+
+def deleteCorruptedConfig(corrupted_configs):
+    # PASS IN SET OF CONFIG PATHS AND THEN CHECK EACH LINE AGAINST BEING IN IT
+    # Include and current lassh.config are the same file
+    """
+    if (faulty_path and
+            os.path.samefile(faulty_path.resolve(),
+                             includePathString)):
+        puts(colored.red(
+            'Deleting include for {0}'.format(includePathString)))
+        includeFound = True
+    """
+    with open(HOME_SSH_CONFIG_PATH, 'r+') as f:
+        lines = f.readlines()
+        f.seek(0)
+        for line in lines:
+            lineComponents = str.split(line)
+            # Check for Include statments
+            if lineComponents and lineComponents[0] == 'Include':
+                includePathString = lineComponents[1]
+                #  Check if this string isn't corrupted, if so write
+                if includePathString not in corrupted_configs:
+                    f.write(line)
+
+            # if not Include statement, preserve it
+            else:
+                f.write(line)
+        f.truncate()
 
 
 @click.group()
@@ -88,10 +130,20 @@ def init():
             lineComponents = str.split(line)
             # Check for Include statments
             if lineComponents and lineComponents[0] == 'Include':
-                includePath = lineComponents[1]
+                includePathString = lineComponents[1]
                 # Check if path indicated by
                 # Include and current lassh.config are the same file
-                if os.path.samefile(LASSH_CONFIG_PATH.resolve(), includePath):
+                includePath = Path(includePathString)
+
+                # Check if a lassh config no longer exists
+                if (not includePath.exists()):
+                    puts(colored.yellow(
+                        'Deleting a config that no longer exists: {0}'
+                         .format(includePath.resolve())))
+                    # deleteCorruptedConfigs()
+
+                if os.path.samefile(LASSH_CONFIG_PATH.resolve(),
+                                    includePathString):
                     puts(colored.yellow(
                         'Global ssh_config already includes this file'))
                     return
