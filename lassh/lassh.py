@@ -126,6 +126,7 @@ def init():
     # Check if the Include statement already exists
     with open(HOME_SSH_CONFIG_PATH, 'r') as f:
         lineSet = set(f.readlines())
+        corrupted_configs = set()
         for line in lineSet:
             lineComponents = str.split(line)
             # Check for Include statments
@@ -137,21 +138,28 @@ def init():
 
                 # Check if a lassh config no longer exists
                 if (not includePath.exists()):
+                    corrupted_configs.add(includePathString)
                     puts(colored.yellow(
-                        'Deleting a config that no longer exists: {0}'
-                         .format(includePath.resolve())))
-                    # deleteCorruptedConfigs()
+                        'Found corrupted config {0}, removing'
+                        .format(includePathString)))
+                    continue
 
+                # Check if global config already points to this file
                 if os.path.samefile(LASSH_CONFIG_PATH.resolve(),
                                     includePathString):
                     puts(colored.yellow(
                         'Global ssh_config already includes this file'))
+
+                    # before we exit, clean up the corrupted configs
+                    deleteCorruptedConfig(corrupted_configs)
                     return
 
     # Else, append a new Include statement!
     puts('Adding Include to global ssh_config')
     with open(HOME_SSH_CONFIG_PATH, 'a') as f:
         f.write("Include {0}\n".format(LASSH_CONFIG_PATH.resolve()))
+    # Then, cleanup any corrupted configs that were found
+    deleteCorruptedConfig(corrupted_configs)
     puts(colored.green('success'))
 
 
@@ -182,6 +190,14 @@ def addhost(nickname, hostname, user, port, key):
 
     # Using ssh_conf library, modify hosts
     config = read_ssh_config(LASSH_CONFIG_PATH.resolve())
+
+    # Check for duplicate hosts
+    if nickname in config.hosts():
+        puts(colored.yellow(
+            'Found duplicate host with nickname {0}'
+            .format(nickname)))
+        return
+
     if (port and key):
         config.add(
                 nickname,
