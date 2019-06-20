@@ -9,9 +9,10 @@ click = "*"
 sshconf = "*"
 clint = "*"
 "flake8" = "*"
+autopep8 = "*"
 
 [dev-packages]
-lassh = {editable = true, path = "."}
+lassh = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"

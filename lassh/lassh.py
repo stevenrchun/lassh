@@ -167,7 +167,7 @@ def init():
 
 @lassh.command()
 @click.confirmation_option(
-        prompt="Are you sure you want to unlink your project lassh.config?")
+    prompt="Are you sure you want to unlink your project lassh.config?")
 def teardown():
     """Deletes reference to lassh.config in
     current directory from global ssh_config"""
@@ -202,11 +202,11 @@ def addhost(nickname, hostname, user, port, key):
 
     if (port and key):
         config.add(
-                nickname,
-                HostName=hostname,
-                User=user,
-                Port=port,
-                IdentityFile=key)
+            nickname,
+            HostName=hostname,
+            User=user,
+            Port=port,
+            IdentityFile=key)
     elif port:
         config.add(nickname, HostName=hostname, User=user, Port=port)
     elif key:
