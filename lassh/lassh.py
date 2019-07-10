@@ -12,9 +12,12 @@ __version__ = "0.1.0"
 HOME_SSH_CONFIG_PATH = Path("~/.ssh/config").expanduser()
 HOME_SSH_DIR_PATH = Path("~/.ssh").expanduser()
 LASSH_CONFIG_PATH = Path("./lassh.config")
+HOME_LASSH_DIR_PATH = Path("~/.lassh").expanduser()
+HOME_LASSH_NAMESPACE_PATH = Path("~/.lassh/namespace").expanduser()
 
 
 def checkFiles():
+    """Check if neccesary files exist"""
     # Check if ~/.ssh directory exists
     if (not HOME_SSH_DIR_PATH.exists()):
         puts(colored.red('.ssh/ not found, try `lassh init`'))
@@ -28,6 +31,13 @@ def checkFiles():
     if (not LASSH_CONFIG_PATH.exists()):
         puts(colored.red("""lassh.config file not found in current directory,
                             try `lassh init`"""))
+
+    if (not HOME_LASSH_DIR_PATH.exists()):
+        puts(colored.red('~.lassh/ not found, try `lassh init`'))
+
+    if (not HOME_LASSH_NAMESPACE_PATH.exists()):
+        puts(colored.red('~.lassh/namespace not found, try `lassh init`'))
+
         return
 
 
@@ -110,7 +120,9 @@ def lassh():
 
 @lassh.command()
 def init():
-    "Initialize lassh.config in current directory"
+    """Checks and creates neccessary files,
+    creates lassh.config in current directory"""
+
     # Check if ~/.ssh directory exists
     if (not HOME_SSH_DIR_PATH.exists()):
         puts('.ssh/ not found, creating')
@@ -124,6 +136,14 @@ def init():
     if (not LASSH_CONFIG_PATH.exists()):
         puts(colored.green('Creating lassh.config file'))
         Path(LASSH_CONFIG_PATH).touch()
+
+    if (not HOME_LASSH_DIR_PATH.exists()):
+        puts(colored.green('Creating ~.lassh/ directory'))
+        Path(HOME_LASSH_DIR_PATH).touch()
+
+    if (not HOME_LASSH_NAMESPACE_PATH.exists()):
+        puts(colored.green('Creating ~.lassh/namespace file'))
+        Path(HOME_LASSH_NAMESPACE_PATH).touch()
 
     # Check if the Include statement already exists
     with open(HOME_SSH_CONFIG_PATH, 'r') as f:
@@ -167,16 +187,32 @@ def init():
 
 @lassh.command()
 @click.confirmation_option(
-    prompt="Are you sure you want to unlink your project lassh.config?")
+    prompt="Are you sure you want to delet your project lassh configuration?")
 def teardown():
-    """Deletes reference to lassh.config in
-    current directory from global ssh_config"""
+    """Deletes project lassh configuration and removes associated nicknames
+    from the global namespace"""
     checkFiles()
     success = deleteInclude()
     if success:
         puts(colored.green('Deleted include from global ssh_config'))
     else:
         puts(colored.yellow('Include not found in global ssh_config'))
+
+    # Remove nicknames associated with this lassh config.
+    config = read_ssh_config(LASSH_CONFIG_PATH.resolve())
+    hostnames = set(config.hosts())
+
+    with open(HOME_LASSH_NAMESPACE_PATH, 'r+') as namespace_file:
+        names = namespace_file.readlines()
+        namespace_file.seek(0)
+
+        for name in names:
+            if name.rstrip() not in hostnames:
+                namespace_file.write(name)
+        namespace_file.truncate()
+
+    # Delete lassh.config file
+    LASSH_CONFIG_PATH.unlink()
 
 
 @lassh.command()
@@ -186,19 +222,29 @@ def teardown():
 @click.option('--port', '-p', type=int)
 @click.option('--key', '-k', type=click.Path())
 def addhost(nickname, hostname, user, port, key):
-    "Add a host to your project lassh.config"
+    """Add a host to your project lassh.config"""
     # Check for requisite files
     checkFiles()
 
     # Using ssh_conf library, modify hosts
     config = read_ssh_config(LASSH_CONFIG_PATH.resolve())
 
-    # Check for duplicate hosts
+    # Check for duplicate hosts in local config
     if nickname in config.hosts():
         puts(colored.yellow(
-            'Found duplicate host with nickname {0}'
+            'Found duplicate host with nickname {0}, cancelling'
             .format(nickname)))
         return
+
+    # Check global namespace for duplicate host
+    with open(HOME_LASSH_NAMESPACE_PATH, 'r+') as namespace_file:
+        names = namespace_file.readlines()
+        names = {name.rstrip() for name in names}
+        namespace_file.seek(0)
+        if nickname in names:
+            puts(colored.red("""Found duplicate host nickname in
+                             global ssh namespace, cancelling"""))
+            return
 
     if (port and key):
         config.add(
@@ -229,3 +275,12 @@ def deletehost(nickname):
     puts(colored.red('Delete hostname {0}').format(nickname))
     config.remove(nickname)
     config.write(LASSH_CONFIG_PATH.resolve())
+
+    with open(HOME_LASSH_NAMESPACE_PATH, 'r+') as namespace_file:
+        names = namespace_file.readlines()
+        namespace_file.seek(0)
+
+        for name in names:
+            if name.rstrip() != nickname:
+                namespace_file.write(name)
+        namespace_file.truncate()
