@@ -29,8 +29,8 @@ def checkFiles():
 
     # Check if lassh.config file exists in current directory
     if (not LASSH_CONFIG_PATH.exists()):
-        puts(colored.red("""lassh.config file not found in current directory,
-                            try `lassh init`"""))
+        puts(colored.red(('lassh.config file not found in current directory'
+                          'try `lassh init`')))
 
     if (not HOME_LASSH_DIR_PATH.exists()):
         puts(colored.red('~.lassh/ not found, try `lassh init`'))
@@ -139,7 +139,7 @@ def init():
 
     if (not HOME_LASSH_DIR_PATH.exists()):
         puts(colored.green('Creating ~.lassh/ directory'))
-        Path(HOME_LASSH_DIR_PATH).touch()
+        Path(HOME_LASSH_DIR_PATH).mkdir(parents=True)
 
     if (not HOME_LASSH_NAMESPACE_PATH.exists()):
         puts(colored.green('Creating ~.lassh/namespace file'))
@@ -242,8 +242,8 @@ def addhost(nickname, hostname, user, port, key):
         names = {name.rstrip() for name in names}
         namespace_file.seek(0)
         if nickname in names:
-            puts(colored.red("""Found duplicate host nickname in
-                             global ssh namespace, cancelling"""))
+            puts(colored.red(('Found duplicate host nickname in'
+                              'global ssh namespace, cancelling')))
             return
 
     if (port and key):
@@ -259,6 +259,11 @@ def addhost(nickname, hostname, user, port, key):
         config.add(nickname, HostName=hostname, User=user, IdentityFile=key)
     else:
         config.add(nickname, HostName=hostname, User=user)
+
+    # append host to namespace file
+    with open(HOME_LASSH_NAMESPACE_PATH, 'a') as namespace_file:
+        namespace_file.write(''.join([nickname + '\n']))
+
     puts(colored.green('Adding host {0} as {1} with user {2}')
          .format(hostname, nickname, user))
     config.write(LASSH_CONFIG_PATH.resolve())
@@ -272,7 +277,12 @@ def deletehost(nickname):
     checkFiles()
 
     config = read_ssh_config(LASSH_CONFIG_PATH.resolve())
-    puts(colored.red('Delete hostname {0}').format(nickname))
+
+    if nickname not in config.hosts():
+        puts(colored.red('Host not found'))
+        return
+
+    puts(colored.red('Deleting hostname {0}').format(nickname))
     config.remove(nickname)
     config.write(LASSH_CONFIG_PATH.resolve())
 

@@ -49,3 +49,10 @@ class TestLasshFile(unittest.TestCase):
             )
 
         self.assertEqual(config_contents, expected_contents)
+
+    # TODO:
+    # test deletehost, where it exists and it doesn't
+    # test duplicates
+    # In testing teardown,
+    # test removal of nickname from global namespace
+    # test deletion of lassh.config file
