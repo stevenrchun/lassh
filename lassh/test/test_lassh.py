@@ -3,6 +3,7 @@ import unittest.mock
 import os
 from pathlib import Path
 from lassh import lassh
+from sshconf import read_ssh_config
 from click.testing import CliRunner
 
 
@@ -33,6 +34,11 @@ class TestLasshFile(unittest.TestCase):
     then compare with expected string
     """
 
+    @unittest.mock.patch('lassh.HOME_SSH_DIR_PATH', Path("./.ssh"))
+    @unittest.mock.patch('lassh.HOME_SSH_CONFIG_PATH', Path("./.ssh/config"))
+    @unittest.mock.patch('lassh.HOME_LASSH_DIR_PATH', Path("./.lassh"))
+    @unittest.mock.patch(
+        'lassh.HOME_LASSH_NAMESPACE_PATH', Path("./.lassh/namespace"))
     def test_addhost(self):
         # create lassh.config
         with self.runner.isolated_filesystem():
@@ -52,6 +58,36 @@ class TestLasshFile(unittest.TestCase):
 
     # TODO:
     # test deletehost, where it exists and it doesn't
+    @unittest.mock.patch('lassh.HOME_SSH_DIR_PATH', Path("./.ssh"))
+    @unittest.mock.patch('lassh.HOME_SSH_CONFIG_PATH', Path("./.ssh/config"))
+    @unittest.mock.patch('lassh.HOME_LASSH_DIR_PATH', Path("./.lassh"))
+    @unittest.mock.patch(
+        'lassh.HOME_LASSH_NAMESPACE_PATH', Path("./.lassh/namespace"))
+    def test_deletehost(self):
+
+        with self.runner.isolated_filesystem():
+            self.runner.invoke(lassh, ['init'])
+
+            self.runner.invoke(
+                lassh, ['addhost', 'snafu', 'foobar@dartmouth.edu', 'henry'])
+
+            config = read_ssh_config(Path("./lassh.config").resolve())
+            self.assertEqual(len(config.hosts()), 1)
+
+            # Now, delete newly added host
+            self.runner.invoke(
+                lassh, ['deletehost', 'snafu']
+            )
+
+            config = read_ssh_config(Path("./lassh.config").resolve())
+            self.assertEqual(len(config.hosts()), 0)
+
+            # test removal when hostname doesn't exist
+            self.runner.invoke(
+                lassh, ['deletehost', 'snafu']
+            )
+            self.assertEqual(len(config.hosts()), 0)
+
     # test duplicates
     # In testing teardown,
     # test removal of nickname from global namespace
