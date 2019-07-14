@@ -1,3 +1,6 @@
+CHANGES.txt
+LICENSE.txt
+MANIFEST.in
 README.md
 setup.py
 lassh/__init__.py
@@ -9,3 +12,5 @@ lassh.egg-info/dependency_links.txt
 lassh.egg-info/entry_points.txt
 lassh.egg-info/requires.txt
 lassh.egg-info/top_level.txt
+lassh/test/__init__.py
+lassh/test/test_lassh.py
