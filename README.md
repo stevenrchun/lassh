@@ -30,4 +30,4 @@ It's important to remember that while LaSSH allows you to distribute your config
 Since each `lassh.config` is a valid ssh config file, if you want to add an option like LocalForward, simply add the host and edit the `lassh.config` file to add more options (or contribute to add the relevant feature to LaSSH!!).
 
 ## Testing
-Tests can be written by running `python -m unittest test.test_lassh` while in the `lassh` python package directory.
+Tests can be run using `python -m unittest test.test_lassh` while in the `lassh` python package directory.
