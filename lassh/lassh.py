@@ -187,7 +187,7 @@ def init():
 
 @lassh.command()
 @click.confirmation_option(
-    prompt="Are you sure you want to delet your project lassh configuration?")
+    prompt="Are you sure you want to delete your project lassh configuration?")
 def teardown():
     """Deletes project lassh configuration and removes associated nicknames
     from the global namespace"""

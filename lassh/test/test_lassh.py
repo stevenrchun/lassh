@@ -1,10 +1,10 @@
+from click.testing import CliRunner
+from sshconf import read_ssh_config
 import unittest
 import unittest.mock
 import os
 from pathlib import Path
 from lassh import lassh
-from sshconf import read_ssh_config
-from click.testing import CliRunner
 
 
 class TestLasshFile(unittest.TestCase):
@@ -44,6 +44,12 @@ class TestLasshFile(unittest.TestCase):
         with self.runner.isolated_filesystem():
             self.runner.invoke(lassh, ['init'])
 
+            with open(Path('./.lassh/namespace'), 'r+') as namespace_file:
+                names = namespace_file.readlines()
+                names = {name.rstrip() for name in names}
+
+            self.assertFalse('snafu' in names)
+
             self.runner.invoke(
                 lassh, ['addhost', 'snafu', 'foobar@dartmouth.edu', 'sally'])
 
@@ -54,7 +60,19 @@ class TestLasshFile(unittest.TestCase):
                 '\nHost snafu\n  HostName foobar@dartmouth.edu\n  User sally\n'
             )
 
-        self.assertEqual(config_contents, expected_contents)
+            self.assertEqual(config_contents, expected_contents)
+
+            with open(Path('./.lassh/namespace'), 'r+') as namespace_file:
+                names = namespace_file.readlines()
+                names = {name.rstrip() for name in names}
+
+            self.assertTrue('snafu' in names)
+
+            # This addhost should fail
+            self.runner.invoke(
+                lassh, ['addhost', 'snafu', 'barfu@stanford.edu', 'sally'])
+
+            self.assertEqual(config_contents, expected_contents)
 
     # TODO:
     # test deletehost, where it exists and it doesn't
@@ -88,7 +106,26 @@ class TestLasshFile(unittest.TestCase):
             )
             self.assertEqual(len(config.hosts()), 0)
 
-    # test duplicates
-    # In testing teardown,
-    # test removal of nickname from global namespace
-    # test deletion of lassh.config file
+    @unittest.mock.patch('lassh.HOME_SSH_DIR_PATH', Path("./.ssh"))
+    @unittest.mock.patch('lassh.HOME_SSH_CONFIG_PATH', Path("./.ssh/config"))
+    @unittest.mock.patch('lassh.HOME_LASSH_DIR_PATH', Path("./.lassh"))
+    @unittest.mock.patch(
+        'lassh.HOME_LASSH_NAMESPACE_PATH', Path("./.lassh/namespace"))
+    def test_teardown(self):
+        with self.runner.isolated_filesystem():
+            self.runner.invoke(lassh, ['init'])
+
+            self.runner.invoke(
+                lassh, ['addhost', 'snafu', 'foobar@dartmouth.edu', 'henry'])
+
+            self.runner.invoke(
+                lassh, ['teardown'], 'y\n'
+            )
+
+            with open(Path("./.lassh/namespace"), 'r+') as namespace_file:
+                names = namespace_file.readlines()
+                names = {name.rstrip() for name in names}
+
+            self.assertFalse('snafu' in names)
+
+            self.assertFalse(Path('./lassh.config').exists())
