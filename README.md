@@ -1,7 +1,9 @@
-# <img src="http://stevenchun.me/LaSSH.svg" alt="Clove Hitch Logo" height="200"> Lassh
+<p align="center"><img src="http://stevenchun.me/LaSSH.svg" alt="Clove Hitch Logo" height="200"></p>
+
+# Lassh 
 An open source, MIT-licensed command line tool for managing per-project ssh configs.
 
-## Using ssh config
+## Using a ssh config
 ssh allows the use of a `config` plaintext file, usually located in `~/.ssh/config`, that allows you to customize `ssh` in a whole host (heh) of ways. One primary use is the creation of aliases for hosts.
 
 However, a single global config file for ssh can quickly become unwieldy and messy ([motivating stack exchange](https://serverfault.com/questions/375525/can-you-have-more-than-one-ssh-config-file)).
