@@ -4,9 +4,13 @@ setup(
     name='lassh',
     author='Steven Chun',
     author_email='schunchicago@gmail.com',
+    description=("An open source, MIT-licensed command line tool for managing"
+                 "per-project ssh configs."),
+    long_description=open('README.md').read(),
     url='https://github.com/stevenrchun/lassh',
     version='0.1.0',
-    packages=['lassh'],
+    license='LICENSE.txt',
+    packages=['lassh', 'lassh.test'],
     install_requires=[
         'Click',
         'sshconf',
@@ -16,7 +20,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'lassh=lassh.__main__:main'         
+            'lassh=lassh.__main__:main'
         ]
     },
 )
