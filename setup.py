@@ -4,7 +4,7 @@ setup(
     name='lassh',
     author='Steven Chun',
     author_email='schunchicago@gmail.com',
-    description=("An open source, MIT-licensed command line tool for managing"
+    description=("An open source, MIT-licensed command line tool for managing "
                  "per-project ssh configs."),
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
