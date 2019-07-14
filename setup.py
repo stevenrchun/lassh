@@ -7,6 +7,7 @@ setup(
     description=("An open source, MIT-licensed command line tool for managing"
                  "per-project ssh configs."),
     long_description=open('README.md').read(),
+    long_description_content_type="text/markdown",
     url='https://github.com/stevenrchun/lassh',
     version='0.1.0',
     license='LICENSE.txt',
