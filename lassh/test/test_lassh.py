@@ -12,12 +12,12 @@ class TestLasshFile(unittest.TestCase):
     def setUp(self):
         self.runner = CliRunner()
 
-    def __init_lassh_config(self):
-        print('sec')
-
     # mock pathlib's expanduser to use the temp directory
     @unittest.mock.patch('lassh.HOME_SSH_DIR_PATH', Path("./.ssh"))
     @unittest.mock.patch('lassh.HOME_SSH_CONFIG_PATH', Path("./.ssh/config"))
+    @unittest.mock.patch('lassh.HOME_LASSH_DIR_PATH', Path("./.lassh"))
+    @unittest.mock.patch(
+        'lassh.HOME_LASSH_NAMESPACE_PATH', Path("./.lassh/namespace"))
     def test_init(self):
         with self.runner.isolated_filesystem():
             self.runner.invoke(lassh, ['init'])
