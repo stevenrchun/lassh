@@ -1,4 +1,4 @@
-Metadata-Version: 1.0
+Metadata-Version: 2.1
 Name: lassh
 Version: 0.1.0
 Summary: An open source, MIT-licensed command line tool for managingper-project ssh configs.
@@ -38,6 +38,7 @@ Description: # <img src="http://stevenchun.me/LaSSH.svg" alt="Clove Hitch Logo" 
         Since each `lassh.config` is a valid ssh config file, if you want to add an option like LocalForward, simply add the host and edit the `lassh.config` file to add more options (or contribute to add the relevant feature to LaSSH!!).
         
         ## Testing
-        Tests can be written by running `python -m unittest test.test_lassh` while in the `lassh` python package directory.
+        Tests can be run using `python -m unittest test.test_lassh` while in the `lassh` python package directory.
         
 Platform: UNKNOWN
+Description-Content-Type: text/markdown
