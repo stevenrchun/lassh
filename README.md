@@ -1,5 +1,4 @@
-![Clove Hitch Logo](http://stevenchun.me/LaSSH.svg)
-# LaSSH
+# ![Clove Hitch Logo](http://stevenchun.me/LaSSH.svg =91x200) LaSSH
 A command line tool for managing per-project SSH Configs
 
 ## What's a SSH_CONFIG
