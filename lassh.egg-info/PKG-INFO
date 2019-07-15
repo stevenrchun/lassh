@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: lassh
 Version: 0.1.0
-Summary: An open source, MIT-licensed command line tool for managingper-project ssh configs.
+Summary: An open source, MIT-licensed command line tool for managing per-project ssh configs.
 Home-page: https://github.com/stevenrchun/lassh
 Author: Steven Chun
 Author-email: schunchicago@gmail.com
