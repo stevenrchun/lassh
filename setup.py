@@ -9,7 +9,7 @@ setup(
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     url='https://github.com/stevenrchun/lassh',
-    version='0.1.0',
+    version='0.1.1',
     license='LICENSE.txt',
     packages=['lassh', 'lassh.test'],
     install_requires=[

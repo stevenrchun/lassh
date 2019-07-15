@@ -7,7 +7,7 @@ from clint.textui import puts, colored
 from sshconf import read_ssh_config
 import click
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 HOME_SSH_CONFIG_PATH = Path("~/.ssh/config").expanduser()
 HOME_SSH_DIR_PATH = Path("~/.ssh").expanduser()
