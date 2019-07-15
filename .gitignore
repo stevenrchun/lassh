@@ -2,4 +2,4 @@
 *.swo
 dist/
 build/
-lassh.egg-info/
+*.egg-info/
