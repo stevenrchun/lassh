@@ -85,16 +85,6 @@ def deleteInclude():
 
 
 def deleteCorruptedConfig(corrupted_configs):
-    # PASS IN SET OF CONFIG PATHS AND THEN CHECK EACH LINE AGAINST BEING IN IT
-    # Include and current lassh.config are the same file
-    """
-    if (faulty_path and
-            os.path.samefile(faulty_path.resolve(),
-                             includePathString)):
-        puts(colored.red(
-            'Deleting include for {0}'.format(includePathString)))
-        includeFound = True
-    """
     with open(HOME_SSH_CONFIG_PATH, 'r+') as f:
         lines = f.readlines()
         f.seek(0)
