@@ -21,7 +21,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'lassh=lassh.__main__:main'
+            'lassh=lassh.lassh:lassh'
         ]
     },
 )
